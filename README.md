@@ -216,7 +216,7 @@ stellarpay/
 
 ## Live Demo
 
-[Add Vercel/Netlify link here after deployment]
+🌐 **[https://stellar-pay-pi.vercel.app/](https://stellar-pay-pi.vercel.app/)**
 
 ---
 
