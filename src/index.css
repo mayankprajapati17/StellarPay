@@ -239,4 +239,26 @@
     animation: shimmer 1.5s infinite;
     border-radius: 6px;
   }
+
+  /* ── Transaction status dots ── */
+  @keyframes pulse-pending {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+  .status-pending {
+    animation: pulse-pending 1.2s ease-in-out infinite;
+    background: #f59e0b;
+  }
+  .status-success {
+    background: #22c55e;
+  }
+  .status-failed {
+    background: #ef4444;
+  }
+
+  /* ── Error pill slide-in ── */
+  @keyframes slideErrorIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 }

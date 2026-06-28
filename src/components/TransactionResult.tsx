@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { truncateAddress } from '../utils/stellar';
+import { pollTransactionStatus } from '../utils/contract';
 import type { TransactionResult } from '../types';
 
 interface TransactionResultProps {
@@ -7,10 +8,32 @@ interface TransactionResultProps {
   onDismiss: () => void;
 }
 
+type TxStatus = 'pending' | 'success' | 'failed';
+
 export const TransactionResultCard: React.FC<TransactionResultProps> = ({
   result,
   onDismiss,
 }) => {
+  const [txStatus, setTxStatus] = useState<TxStatus>(result.success ? 'pending' : 'failed');
+  const [ledger, setLedger] = useState<number | undefined>(undefined);
+  const cleanupRef = useRef<(() => void) | null>(null);
+
+  // Start polling when we have a transaction hash
+  useEffect(() => {
+    if (!result.success || !result.hash) return;
+
+    // Only poll for the live status on success results
+    const cleanup = pollTransactionStatus(result.hash, (status, ledgerNum) => {
+      setTxStatus(status);
+      if (ledgerNum) setLedger(ledgerNum);
+    });
+    cleanupRef.current = cleanup;
+
+    return () => {
+      cleanup();
+    };
+  }, [result.hash, result.success]);
+
   if (result.success) {
     return (
       <div
@@ -52,6 +75,51 @@ export const TransactionResultCard: React.FC<TransactionResultProps> = ({
             Transaction Sent!
           </h2>
         </div>
+
+        {/* Live Status Tracker */}
+        {result.hash && (
+          <div
+            style={{
+              marginTop: '14px',
+              padding: '10px 14px',
+              background: 'rgba(0,0,0,0.2)',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}
+          >
+            {/* Status dot */}
+            <span
+              className={
+                txStatus === 'pending'
+                  ? 'status-pending'
+                  : txStatus === 'success'
+                  ? 'status-success'
+                  : 'status-failed'
+              }
+              style={{
+                display: 'inline-block',
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                flexShrink: 0,
+              }}
+            />
+            <div style={{ flex: 1 }}>
+              <p style={{ margin: 0, fontSize: '12px', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                {txStatus === 'pending' && '⏳ Pending — waiting for confirmation'}
+                {txStatus === 'success' && '✅ Confirmed on Stellar Testnet'}
+                {txStatus === 'failed' && '❌ Transaction failed on network'}
+              </p>
+              {txStatus === 'success' && ledger && (
+                <p style={{ margin: '2px 0 0 0', fontSize: '11px', color: 'var(--text-tertiary)' }}>
+                  Ledger #{ledger.toLocaleString()}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Details */}
         <div

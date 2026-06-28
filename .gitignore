@@ -26,3 +26,10 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Rust / Cargo build artifacts
+contracts/target/
+
+# Agent config (local only)
+.agents/
+skills-lock.json

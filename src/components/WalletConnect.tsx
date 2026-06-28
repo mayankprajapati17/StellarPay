@@ -2,16 +2,12 @@ import React from 'react';
 
 interface WalletConnectProps {
   isConnecting: boolean;
-  error: string | null;
-  onConnect: () => void;
-  onClearError: () => void;
+  onOpenModal: () => void;
 }
 
 export const WalletConnect: React.FC<WalletConnectProps> = ({
   isConnecting,
-  error,
-  onConnect,
-  onClearError,
+  onOpenModal,
 }) => {
   return (
     <div
@@ -101,7 +97,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           Generate payment links on Stellar Testnet
         </p>
 
-        {/* Feature pills — single row, no wrap */}
+        {/* Feature pills */}
         <div
           style={{
             display: 'flex',
@@ -140,13 +136,41 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
           ))}
         </div>
 
-        {/* Connect button */}
+        {/* Multi-wallet pills row */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            marginTop: '20px',
+            justifyContent: 'center',
+          }}
+        >
+          {[
+            { label: 'Freighter', color: '#6366f1' },
+            { label: 'LOBSTR', color: '#0ea5e9' },
+            { label: 'xBull', color: '#f59e0b' },
+          ].map(({ label, color }) => (
+            <span
+              key={label}
+              style={{
+                fontSize: '11px',
+                fontWeight: 500,
+                padding: '4px 10px',
+                borderRadius: '20px',
+                background: `${color}18`,
+                color,
+                border: `1px solid ${color}30`,
+              }}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+
+        {/* Connect Wallet button */}
         <button
           id="connect-wallet-btn"
-          onClick={() => {
-            onClearError();
-            onConnect();
-          }}
+          onClick={onOpenModal}
           disabled={isConnecting}
           style={{
             marginTop: '36px',
@@ -191,7 +215,6 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
         >
           {isConnecting ? (
             <>
-              {/* Spinner */}
               <span
                 style={{
                   width: '16px',
@@ -207,33 +230,15 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
               Connecting...
             </>
           ) : (
-            'Connect Freighter Wallet'
+            <>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+              </svg>
+              Connect Wallet
+            </>
           )}
         </button>
-
-        {/* Error pill */}
-        {error && (
-          <div
-            className="animate-fade-in"
-            style={{ marginTop: '12px', width: '100%', display: 'flex', justifyContent: 'center' }}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                background: 'var(--error-bg)',
-                color: 'var(--error)',
-                border: '1px solid rgba(239,68,68,0.2)',
-                borderRadius: '10px',
-                fontSize: '12px',
-                padding: '8px 16px',
-                maxWidth: '380px',
-                lineHeight: 1.5,
-              }}
-            >
-              {error}
-            </span>
-          </div>
-        )}
 
         {/* Bottom text */}
         <p
@@ -244,24 +249,7 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({
             color: '#4a4a65',
           }}
         >
-          Don&apos;t have Freighter?{' '}
-          <a
-            href="https://freighter.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: '#6366f1',
-              textDecoration: 'none',
-            }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.textDecoration = 'underline')
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.textDecoration = 'none')
-            }
-          >
-            freighter.app →
-          </a>
+          Supports Freighter, LOBSTR &amp; xBull
         </p>
       </div>
     </div>

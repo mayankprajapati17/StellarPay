@@ -1,17 +1,22 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { WalletConnect } from './components/WalletConnect';
+import { WalletModal } from './components/WalletModal';
 import { BalanceCard } from './components/BalanceCard';
 import { SendForm } from './components/SendForm';
 import { TransactionResultCard } from './components/TransactionResult';
+import { CreatePaymentLink } from './components/CreatePaymentLink';
+import { PaymentPage } from './pages/PaymentPage';
 import { useWallet } from './hooks/useWallet';
 import type { TransactionResult } from './types';
 
-function App() {
+function Dashboard() {
   const {
     publicKey,
     isConnected,
     isConnecting,
+    connectingWalletId,
     balance,
     isLoadingBalance,
     error,
@@ -22,11 +27,11 @@ function App() {
   } = useWallet();
 
   const [txResult, setTxResult] = useState<TransactionResult | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleTransactionSuccess = useCallback(
     (result: TransactionResult) => {
       setTxResult(result);
-      // Refresh balance after successful transaction
       fetchBalance();
     },
     [fetchBalance]
@@ -35,6 +40,28 @@ function App() {
   const handleDismissResult = useCallback(() => {
     setTxResult(null);
   }, []);
+
+  const handleOpenModal = useCallback(() => {
+    clearError();
+    setIsModalOpen(true);
+  }, [clearError]);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  const handleConnectWallet = useCallback(
+    async (walletId: string) => {
+      await connectWallet(walletId);
+    },
+    [connectWallet]
+  );
+
+  useEffect(() => {
+    if (isConnected && isModalOpen) {
+      setIsModalOpen(false);
+    }
+  }, [isConnected]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--surface-base)', display: 'flex', flexDirection: 'column' }}>
@@ -71,14 +98,22 @@ function App() {
         onDisconnect={disconnectWallet}
       />
 
+      {/* Multi-wallet modal */}
+      <WalletModal
+        isOpen={isModalOpen}
+        connectingWalletId={connectingWalletId}
+        error={error}
+        onConnect={handleConnectWallet}
+        onClose={handleCloseModal}
+        onClearError={clearError}
+      />
+
       {/* Main content */}
       <main style={{ position: 'relative', zIndex: 10, flex: 1, display: 'flex', flexDirection: 'column' }}>
         {!isConnected ? (
           <WalletConnect
             isConnecting={isConnecting}
-            error={error}
-            onConnect={connectWallet}
-            onClearError={clearError}
+            onOpenModal={handleOpenModal}
           />
         ) : (
           <div
@@ -132,9 +167,15 @@ function App() {
                 publicKey && (
                   <SendForm
                     fromPublicKey={publicKey}
+                    balance={balance}
                     onSuccess={handleTransactionSuccess}
                   />
                 )
+              )}
+
+              {/* Create Payment Link — Level 2 feature */}
+              {publicKey && !txResult && (
+                <CreatePaymentLink merchantPublicKey={publicKey} />
               )}
             </div>
 
@@ -148,6 +189,15 @@ function App() {
         )}
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/pay/:slug" element={<PaymentPage />} />
+      <Route path="/" element={<Dashboard />} />
+    </Routes>
   );
 }
 

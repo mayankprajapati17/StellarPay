@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { sendPayment, isValidStellarAddress } from '../utils/stellar';
 import type { TransactionResult } from '../types';
 
 interface SendFormProps {
   fromPublicKey: string;
+  balance: string | null;
   onSuccess: (result: TransactionResult) => void;
 }
 
@@ -12,14 +13,109 @@ interface FormErrors {
   amount?: string;
 }
 
-export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, onSuccess }) => {
+type ErrorType = 'not_installed' | 'rejected' | 'insufficient' | 'unknown';
+
+interface SendError {
+  message: string;
+  type: ErrorType;
+  url?: string;
+}
+
+/** Classify a caught send error into one of the 3 canonical types. */
+function classifySendError(err: unknown, amount?: string, balance?: string | null): SendError {
+  const msg =
+    err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
+
+  if (
+    msg.includes('not available') ||
+    msg.includes('not installed') ||
+    msg.includes('not found') ||
+    msg.includes('install') ||
+    msg.includes('extension not found')
+  ) {
+    return {
+      type: 'not_installed',
+      message: 'Freighter is not installed. Download it at freighter.app',
+      url: 'https://freighter.app',
+    };
+  }
+
+  if (
+    msg.includes('rejected') ||
+    msg.includes('denied') ||
+    msg.includes('cancelled') ||
+    msg.includes('canceled') ||
+    msg.includes('user refused') ||
+    msg.includes('declined')
+  ) {
+    return {
+      type: 'rejected',
+      message: 'Transaction rejected. You cancelled the request in your wallet.',
+    };
+  }
+
+  if (msg.includes('insufficient')) {
+    const bal = balance ? parseFloat(balance).toFixed(2) : '?';
+    const amt = amount ? parseFloat(amount).toFixed(2) : '?';
+    return {
+      type: 'insufficient',
+      message: `Insufficient balance. You need at least ${amt} XLM. Your balance: ${bal} XLM`,
+    };
+  }
+
+  return {
+    type: 'unknown',
+    message: err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.',
+  };
+}
+
+const ERROR_COLORS: Record<ErrorType, { bg: string; border: string; text: string }> = {
+  not_installed: {
+    bg: 'rgba(239,68,68,0.08)',
+    border: 'rgba(239,68,68,0.25)',
+    text: '#ef4444',
+  },
+  rejected: {
+    bg: 'rgba(245,158,11,0.08)',
+    border: 'rgba(245,158,11,0.25)',
+    text: '#f59e0b',
+  },
+  insufficient: {
+    bg: 'rgba(239,68,68,0.08)',
+    border: 'rgba(239,68,68,0.25)',
+    text: '#ef4444',
+  },
+  unknown: {
+    bg: 'rgba(239,68,68,0.08)',
+    border: 'rgba(239,68,68,0.25)',
+    text: '#ef4444',
+  },
+};
+
+const AUTO_DISMISS_MS = 8000;
+
+export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, balance, onSuccess }) => {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [memo, setMemo] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const [recipientValid, setRecipientValid] = useState<boolean | null>(null);
   const [isSending, setIsSending] = useState(false);
-  const [sendError, setSendError] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<SendError | null>(null);
+  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Auto-dismiss error after 8 seconds
+  useEffect(() => {
+    if (sendError) {
+      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = setTimeout(() => {
+        setSendError(null);
+      }, AUTO_DISMISS_MS);
+    }
+    return () => {
+      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    };
+  }, [sendError]);
 
   const validateRecipient = useCallback((value: string) => {
     if (!value.trim()) {
@@ -66,6 +162,20 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, onSuccess }) 
       return;
     }
 
+    // ── Error Type 3: Insufficient balance pre-flight check ──
+    // Keep 1 XLM as minimum reserve (Stellar network requirement)
+    if (balance !== null) {
+      const balanceNum = parseFloat(balance);
+      if (!isNaN(balanceNum) && numAmount > balanceNum - 1) {
+        const available = Math.max(0, balanceNum - 1).toFixed(2);
+        setSendError({
+          type: 'insufficient',
+          message: `Insufficient balance. You need at least ${numAmount.toFixed(2)} XLM. Your balance: ${balanceNum.toFixed(2)} XLM (${available} XLM available after 1 XLM reserve).`,
+        });
+        return;
+      }
+    }
+
     setIsSending(true);
     try {
       const hash = await sendPayment({
@@ -88,15 +198,13 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, onSuccess }) 
       setErrors({});
       setRecipientValid(null);
     } catch (err) {
-      if (err instanceof Error) {
-        setSendError(err.message);
-      } else {
-        setSendError('An unexpected error occurred. Please try again.');
-      }
+      setSendError(classifySendError(err, amount, balance));
     } finally {
       setIsSending(false);
     }
   };
+
+  const colors = sendError ? ERROR_COLORS[sendError.type] : null;
 
   return (
     <div className="sp-card card-hover animate-slide-up">
@@ -182,10 +290,7 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, onSuccess }) 
             </div>
           </div>
           {errors.recipient && (
-            <p
-              className="animate-fade-in"
-              style={{ margin: '6px 0 0 0', fontSize: '12px', color: 'var(--error)' }}
-            >
+            <p className="animate-fade-in" style={{ margin: '6px 0 0 0', fontSize: '12px', color: 'var(--error)' }}>
               {errors.recipient}
             </p>
           )}
@@ -243,11 +348,14 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, onSuccess }) 
             />
           </div>
           {errors.amount && (
-            <p
-              className="animate-fade-in"
-              style={{ margin: '6px 0 0 0', fontSize: '12px', color: 'var(--error)' }}
-            >
+            <p className="animate-fade-in" style={{ margin: '6px 0 0 0', fontSize: '12px', color: 'var(--error)' }}>
               {errors.amount}
+            </p>
+          )}
+          {/* Available balance hint */}
+          {balance !== null && (
+            <p style={{ margin: '4px 0 0 0', fontSize: '11px', color: 'var(--text-tertiary)' }}>
+              Available: {Math.max(0, parseFloat(balance) - 1).toFixed(2)} XLM (after 1 XLM reserve)
             </p>
           )}
         </div>
@@ -292,24 +400,62 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, onSuccess }) 
           />
         </div>
 
-        {/* Send error pill */}
-        {sendError && (
-          <div className="animate-fade-in" style={{ display: 'flex', justifyContent: 'center' }}>
-            <span
+        {/* Enhanced Error Pill */}
+        {sendError && colors && (
+          <div
+            className="animate-fade-in"
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '8px',
+              padding: '10px 14px',
+              borderRadius: '10px',
+              background: colors.bg,
+              border: `1px solid ${colors.border}`,
+              animation: 'slideErrorIn 0.2s ease-out',
+            }}
+          >
+            <div style={{ flex: 1 }}>
+              <p style={{ margin: 0, fontSize: '12px', color: colors.text, lineHeight: 1.5 }}>
+                {sendError.message}
+              </p>
+              {sendError.type === 'not_installed' && sendError.url && (
+                <a
+                  href={sendError.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-block',
+                    marginTop: '4px',
+                    fontSize: '11px',
+                    color: '#6366f1',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Download Freighter →
+                </a>
+              )}
+            </div>
+            {/* X dismiss button */}
+            <button
+              type="button"
+              onClick={() => setSendError(null)}
+              aria-label="Dismiss error"
               style={{
-                display: 'inline-block',
-                background: 'var(--error-bg)',
-                color: 'var(--error)',
-                border: '1px solid rgba(239,68,68,0.2)',
-                borderRadius: '8px',
-                fontSize: '12px',
-                padding: '8px 14px',
-                width: '100%',
-                lineHeight: 1.4,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '2px',
+                flexShrink: 0,
+                color: colors.text,
+                opacity: 0.7,
+                lineHeight: 1,
               }}
             >
-              {sendError}
-            </span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         )}
 
@@ -323,7 +469,7 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, onSuccess }) 
           {isSending ? (
             <>
               <span className="spinner" />
-              Signing in Freighter...
+              Signing in wallet...
             </>
           ) : (
             'Send Transaction →'
