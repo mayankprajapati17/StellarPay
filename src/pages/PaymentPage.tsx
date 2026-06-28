@@ -223,7 +223,6 @@ export const PaymentPage: React.FC = () => {
   const {
     publicKey,
     isConnected,
-    isConnecting,
     connectingWalletId,
     error: walletError,
     connectWallet,
