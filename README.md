@@ -233,6 +233,8 @@ stellarpay/
 ### Wallet picker modal
 <img width="1899" height="816" alt="screencapture-stellar-fr3gghwf4-mayank-prajapatis-projects-vercel-app-2026-06-29-14_19_11" src="https://github.com/user-attachments/assets/cccd2327-f3b8-404a-9864-631e13c3994d" />
 
+### Smart Contract
+<img width="1920" height="1080" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/7384209d-b1e8-429b-9d4a-66213cf0817a" />
 
 ### Payment link created (stored on-chain)  
 <img width="1920" height="1080" alt="Screenshot (10)" src="https://github.com/user-attachments/assets/b6833cd7-cb9b-4600-b9a1-e38b3c5ad474" />
