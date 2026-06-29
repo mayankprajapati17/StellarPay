@@ -213,6 +213,27 @@ stellarpay/
 - **No Backend**: All blockchain interactions happen directly from the browser
 
 ---
+## Smart Contract Details
+
+| Item | Value |
+|------|-------|
+| Contract Address | `YOUR_FULL_CONTRACT_ADDRESS` |
+| Network | Stellar Testnet |
+| Language | Rust (soroban-sdk 21.0) |
+| Explorer | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/YOUR_ADDRESS) |
+
+## Contract Interaction Proof
+- Transaction hash of `create_link` call: `YOUR_TX_HASH`
+- [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/YOUR_TX_HASH)
+
+## Screenshots
+### Wallet picker modal
+<img width="1899" height="816" alt="screencapture-stellar-fr3gghwf4-mayank-prajapatis-projects-vercel-app-2026-06-29-14_19_11" src="https://github.com/user-attachments/assets/cccd2327-f3b8-404a-9864-631e13c3994d" />
+
+
+### Payment link created (stored on-chain)  
+<img width="1920" height="1080" alt="Screenshot (10)" src="https://github.com/user-attachments/assets/b6833cd7-cb9b-4600-b9a1-e38b3c5ad474" />
+
 
 ## Live Demo
 
