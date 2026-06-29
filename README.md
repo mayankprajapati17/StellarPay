@@ -1,4 +1,4 @@
-# StellarPay Link — Yellow Belt dApp
+# StellarPay Link — dApp
 
 [![Stellar](https://img.shields.io/badge/Stellar-Testnet-blue?logo=stellar)](https://stellar.org)
 [![React](https://img.shields.io/badge/React-18-61dafb?logo=react)](https://reactjs.org)
