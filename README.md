@@ -227,6 +227,9 @@ stellarpay/
 - [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/YOUR_TX_HASH)
 
 ## Screenshots
+### Landing page
+<img width="1899" height="816" alt="screencapture-stellar-pay-pi-vercel-app-2026-06-29-14_58_20" src="https://github.com/user-attachments/assets/677afb65-c8c6-45cb-8289-1257024b34dd" />
+
 ### Wallet picker modal
 <img width="1899" height="816" alt="screencapture-stellar-fr3gghwf4-mayank-prajapatis-projects-vercel-app-2026-06-29-14_19_11" src="https://github.com/user-attachments/assets/cccd2327-f3b8-404a-9864-631e13c3994d" />
 
