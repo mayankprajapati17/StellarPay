@@ -220,7 +220,7 @@ stellarpay/
 | Contract Address | CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD |
 | Network | Stellar Testnet |
 | Language | Rust (soroban-sdk 21.0) |
-| Explorer | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/YOUR_ADDRESS) |
+| Explorer | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD) |
 
 ## Contract Interaction Proof
 - Transaction hash of `create_link` call: `YOUR_TX_HASH`
