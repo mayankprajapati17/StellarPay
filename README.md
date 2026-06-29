@@ -217,7 +217,7 @@ stellarpay/
 
 | Item | Value |
 |------|-------|
-| Contract Address | `YOUR_FULL_CONTRACT_ADDRESS` |
+| Contract Address | CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD |
 | Network | Stellar Testnet |
 | Language | Rust (soroban-sdk 21.0) |
 | Explorer | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/YOUR_ADDRESS) |
