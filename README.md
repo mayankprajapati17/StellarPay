@@ -223,8 +223,8 @@ stellarpay/
 | Explorer | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD) |
 
 ## Contract Interaction Proof
-- Transaction hash of `create_link` call: `YOUR_TX_HASH`
-- [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/YOUR_TX_HASH)
+- Transaction hash of `create_link` call: `b6bb4d5528dbc09d1c8ee144f3a9686ebcd0e35c9b5255266903bad5253f97cc    `
+- [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/b6bb4d5528dbc09d1c8ee144f3a9686ebcd0e35c9b5255266903bad5253f97cc    )
 
 ## Screenshots
 ### Landing page
