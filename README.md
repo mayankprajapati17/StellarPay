@@ -1,4 +1,4 @@
-# StellarPay Link — Yellow Belt dApp
+# StellarPay Link — dApp
 
 [![Stellar](https://img.shields.io/badge/Stellar-Testnet-blue?logo=stellar)](https://stellar.org)
 [![React](https://img.shields.io/badge/React-18-61dafb?logo=react)](https://reactjs.org)
@@ -272,6 +272,32 @@ stellarpay/
 - **No Backend**: All blockchain interactions happen directly from the browser
 
 ---
+## Smart Contract Details
+
+| Item | Value |
+|------|-------|
+| Contract Address | CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD |
+| Network | Stellar Testnet |
+| Language | Rust (soroban-sdk 21.0) |
+| Explorer | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD) |
+
+## Contract Interaction Proof
+- Transaction hash of `create_link` call: `b6bb4d5528dbc09d1c8ee144f3a9686ebcd0e35c9b5255266903bad5253f97cc    `
+- [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/b6bb4d5528dbc09d1c8ee144f3a9686ebcd0e35c9b5255266903bad5253f97cc    )
+
+## Screenshots
+### Landing page
+<img width="1899" height="816" alt="screencapture-stellar-pay-pi-vercel-app-2026-06-29-14_58_20" src="https://github.com/user-attachments/assets/677afb65-c8c6-45cb-8289-1257024b34dd" />
+
+### Wallet picker modal
+<img width="1899" height="816" alt="screencapture-stellar-fr3gghwf4-mayank-prajapatis-projects-vercel-app-2026-06-29-14_19_11" src="https://github.com/user-attachments/assets/cccd2327-f3b8-404a-9864-631e13c3994d" />
+
+### Smart Contract
+<img width="1920" height="1080" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/7384209d-b1e8-429b-9d4a-66213cf0817a" />
+
+### Payment link created (stored on-chain)  
+<img width="1920" height="1080" alt="Screenshot (10)" src="https://github.com/user-attachments/assets/b6833cd7-cb9b-4600-b9a1-e38b3c5ad474" />
+
 
 ## Live Demo
 
