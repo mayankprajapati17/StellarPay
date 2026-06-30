@@ -1,0 +1,96 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend-checks:
+    name: Frontend Build & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  contract-tests:
+    name: Soroban Contract Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust + WASM target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # wasm32v1-none is the target used by stellar-cli / soroban-sdk 26+
+          targets: wasm32v1-none
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            contracts/target
+            contracts/escrow/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('contracts/Cargo.lock', 'contracts/escrow/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Run payment-link contract tests
+        run: cargo test --manifest-path contracts/Cargo.toml --verbose
+
+      - name: Run escrow contract tests
+        run: cargo test --manifest-path contracts/escrow/Cargo.toml --verbose
+
+      - name: Build payment-link contract (WASM)
+        run: cargo build --target wasm32v1-none --release --manifest-path contracts/Cargo.toml
+
+      - name: Build escrow contract (WASM)
+        run: cargo build --target wasm32v1-none --release --manifest-path contracts/escrow/Cargo.toml
+
+  frontend-tests:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm test
+
+  deploy-preview:
+    name: Deploy Preview
+    needs: [frontend-checks, contract-tests, frontend-tests]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Vercel Preview
+        run: echo "Vercel auto-deploys PRs if connected via GitHub integration"

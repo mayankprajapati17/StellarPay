@@ -40,4 +40,11 @@ export default defineConfig({
       plugins: [],
     },
   },
+  // Vitest configuration — runs unit tests in a jsdom browser environment
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    include: ['src/**/__tests__/**/*.test.ts', 'src/**/__tests__/**/*.test.tsx'],
+    setupFiles: [],
+  },
 })

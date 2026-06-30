@@ -207,8 +207,15 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, balance, onSu
   const colors = sendError ? ERROR_COLORS[sendError.type] : null;
 
   return (
-    <div className="sp-card card-hover animate-slide-up">
-      {/* Header */}
+    <div className="sf-root sp-card card-hover animate-slide-up">
+      {/* Mobile-responsive overrides */}
+      <style>{`
+        @media (max-width: 480px) {
+          .sf-root { padding: 16px !important; }
+          .sf-submit-btn { width: 100% !important; }
+        }
+      `}</style>
+
       <div style={{ marginBottom: '20px' }}>
         <h2
           style={{
@@ -464,7 +471,7 @@ export const SendForm: React.FC<SendFormProps> = ({ fromPublicKey, balance, onSu
           id="send-payment-btn"
           type="submit"
           disabled={isSending}
-          className="btn-cta"
+          className="sf-submit-btn btn-cta"
         >
           {isSending ? (
             <>

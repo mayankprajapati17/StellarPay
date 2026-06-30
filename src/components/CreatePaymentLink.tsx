@@ -199,7 +199,14 @@ export const CreatePaymentLink: React.FC<CreatePaymentLinkProps> = ({
   // Success state
   if (createdLink && (txStatus === 'success' || txStatus === 'pending')) {
     return (
-      <div className="sp-card animate-slide-up">
+      <div className="cpl-root sp-card animate-slide-up">
+        {/* Mobile-responsive overrides */}
+        <style>{`
+          @media (max-width: 480px) {
+            .cpl-root { padding: 16px !important; }
+            .cpl-btn { width: 100% !important; }
+          }
+        `}</style>
         <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
             Create Payment Link
@@ -273,6 +280,7 @@ export const CreatePaymentLink: React.FC<CreatePaymentLinkProps> = ({
 
           <button
             id="copy-link-btn"
+            className="cpl-btn"
             onClick={handleCopy}
             style={{
               display: 'flex',
@@ -312,6 +320,7 @@ export const CreatePaymentLink: React.FC<CreatePaymentLinkProps> = ({
           {/* Open payment page button */}
           <button
             id="open-payment-page-btn"
+            className="cpl-btn"
             onClick={() => window.open(`/pay/${createdLink.slug}`, '_blank')}
             style={{
               display: 'flex',
@@ -366,7 +375,7 @@ export const CreatePaymentLink: React.FC<CreatePaymentLinkProps> = ({
 
         <button
           onClick={handleReset}
-          className="btn-outline"
+          className="cpl-btn btn-outline"
           style={{ marginTop: '12px' }}
         >
           Create Another Link
@@ -376,7 +385,14 @@ export const CreatePaymentLink: React.FC<CreatePaymentLinkProps> = ({
   }
 
   return (
-    <div className="sp-card card-hover animate-slide-up">
+    <div className="cpl-root sp-card card-hover animate-slide-up">
+      {/* Mobile-responsive overrides */}
+      <style>{`
+        @media (max-width: 480px) {
+          .cpl-root { padding: 16px !important; }
+          .cpl-btn { width: 100% !important; }
+        }
+      `}</style>
       {/* Header */}
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
         <div>
@@ -578,7 +594,7 @@ export const CreatePaymentLink: React.FC<CreatePaymentLinkProps> = ({
           id="create-link-btn"
           type="submit"
           disabled={isSubmitting || !CONTRACT_ID}
-          className="btn-cta"
+          className="cpl-btn btn-cta"
         >
           {isSubmitting ? (
             <>

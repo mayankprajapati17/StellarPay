@@ -7,6 +7,7 @@ import { BalanceCard } from './components/BalanceCard';
 import { SendForm } from './components/SendForm';
 import { TransactionResultCard } from './components/TransactionResult';
 import { CreatePaymentLink } from './components/CreatePaymentLink';
+import { EscrowManager } from './components/EscrowManager';
 import { PaymentPage } from './pages/PaymentPage';
 import { useWallet } from './hooks/useWallet';
 import type { TransactionResult } from './types';
@@ -176,6 +177,14 @@ function Dashboard() {
               {/* Create Payment Link — Level 2 feature */}
               {publicKey && !txResult && (
                 <CreatePaymentLink merchantPublicKey={publicKey} />
+              )}
+
+              {/* Escrow Manager — Level 3 feature */}
+              {publicKey && !txResult && (
+                <EscrowManager
+                  publicKey={publicKey}
+                  onRefreshBalance={fetchBalance}
+                />
               )}
             </div>
 

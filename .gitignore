@@ -29,6 +29,8 @@ yarn-error.log*
 
 # Rust / Cargo build artifacts
 contracts/target/
+contracts/escrow/target/
+temp_target/
 
 # Agent config (local only)
 .agents/

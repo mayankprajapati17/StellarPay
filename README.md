@@ -12,6 +12,65 @@ StellarPay Link is a Stellar blockchain payment dApp built for the **Stellar Jou
 
 ---
 
+## Level 3 Features (Orange Belt)
+
+### Advanced Smart Contracts
+- **Second contract**: Escrow system with buyer protection.
+- **Inter-contract communication**: Escrow contract invokes `get_link` on the L2 Payment-Link contract to verify link validity before locking funds.
+- **Custom error types** with `EscrowError` contracterror enum.
+- **Event publishing** for escrow state changes.
+
+### CI/CD Pipeline
+- **GitHub Actions**: automated build, lint, and test on every push.
+- Runs both contract test suites (payment-link + escrow).
+- TypeScript type-checking.
+- WASM build verification.
+
+### Testing
+- Contract tests: 8 passing (payment-link: 4, escrow: 4)
+- Frontend unit tests: vitest for utility functions (8 tests passing)
+- Run contract tests: `cargo test --manifest-path contracts/Cargo.toml`
+- Run escrow tests: `cargo test --manifest-path contracts/escrow/Cargo.toml`
+- Run frontend tests: `npm test`
+
+### Mobile Responsive
+- Fully responsive from 375px to desktop.
+- Tested on iPhone SE, iPhone 12, iPad viewports.
+
+## Escrow Contract Deployment
+
+# Build
+stellar contract build --manifest-path contracts/escrow/Cargo.toml
+
+# Deploy
+stellar contract deploy \
+  --wasm contracts/escrow/target/wasm32v1-none/release/stellarpay_escrow.wasm \
+  --source deployer \
+  --network testnet
+
+# Save to .env
+VITE_ESCROW_CONTRACT_ID=<CC2P7XKSQ4PDLFNY4EYNFFQYOCKYTVYAOIIGEEIRFY6CYMGVMGM4WMA5>
+
+## Contract Addresses
+
+| Contract | Address | Explorer |
+|----------|---------|----------|
+| Payment Link | `CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD` | [View](https://stellar.expert/explorer/testnet/contract/CB3ZAOPIEQFMWYOXHOSBCVXPV7AAGNITENMHJSOG3VBJV6II5RDIIPAD) |
+| Escrow | `CB2O52PBY2VKL243FFXJ4Y5KOSBYVGYF72M66B5H43I33M6F62I52C2D` | [View](https://stellar.expert/explorer/testnet/contract/CB2O52PBY2VKL243FFXJ4Y5KOSBYVGYF72M66B5H43I33M6F62I52C2D) |
+
+## Inter-Contract Call Proof
+Transaction hash showing escrow contract calling payment-link contract:
+`eba7ec0d1a2eb131ef12d9af8654e5af966ccc55a0441357d124e77ce204d9c9`
+[View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/eba7ec0d1a2eb131ef12d9af8654e5af966ccc55a0441357d124e77ce204d9c9)
+
+## Demo Video
+[Watch 1-2 min demo](your-video-link)
+
+## CI/CD Status
+![CI](https://github.com/mayankprajapati17/StellarPay/actions/workflows/ci.yml/badge.svg)
+
+---
+
 ## Level 2 Features (Yellow Belt)
 
 ### Part 1 — Multi-Wallet Support
