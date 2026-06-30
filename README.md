@@ -64,10 +64,8 @@ Transaction hash showing escrow contract calling payment-link contract:
 [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/eba7ec0d1a2eb131ef12d9af8654e5af966ccc55a0441357d124e77ce204d9c9)
 
 ## Demo Video
-[Watch 1-2 min demo](your-video-link)
+[Watch 1-2 min demo](https://youtu.be/d6Qf5j1eNJE)
 
-## CI/CD Status
-![CI](https://github.com/mayankprajapati17/StellarPay/actions/workflows/ci.yml/badge.svg)
 
 ---
 
