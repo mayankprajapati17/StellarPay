@@ -299,17 +299,26 @@ export const PaymentPage: React.FC = () => {
   // ── Escrow payment ──
   const handleEscrowPay = useCallback(async () => {
     if (!publicKey || !linkData) return;
+
+    // Guard: payer cannot be the merchant
+    if (publicKey === linkData.merchant) {
+      setEscrowError('You cannot create an escrow for your own payment link.');
+      setEscrowStep('failed');
+      return;
+    }
+
     setEscrowStep('creating');
     setEscrowError(null);
 
     try {
-      const amountXLM = stroopsToXLM(linkData.amount);
+      // Pass exact stroops as string to avoid floating-point precision loss
+      const amountStroops = linkData.amount.toString();
 
       // createEscrow returns JSON: { xdr, escrowId }
       const raw = await createEscrow({
         payerPublicKey:    publicKey,
         merchantPublicKey: linkData.merchant,
-        amount:            amountXLM,
+        amount:            amountStroops,
         linkSlug:          linkData.slug,
       });
 

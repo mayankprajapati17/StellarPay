@@ -116,9 +116,7 @@ export async function createEscrow(params: {
   // Generate a UUID-style escrow ID from timestamp + random suffix
   const escrowId = `esc-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-  const amountStroops = BigInt(
-    Math.floor(parseFloat(params.amount) * 10_000_000)
-  );
+  const amountStroops = BigInt(params.amount);
 
   const transaction = new StellarSdk.TransactionBuilder(account, {
     fee: StellarSdk.BASE_FEE,
