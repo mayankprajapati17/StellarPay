@@ -310,4 +310,4 @@ stellarpay/
 
 ---
 
-Built with ⚡ for the **Stellar Journey to Mastery** program — Level 2 Yellow Belt submission.
+Built with ⚡ for the **Stellar Journey to Mastery** program 
