@@ -43,7 +43,7 @@ export const EscrowManager: React.FC<EscrowManagerProps> = ({ publicKey, onRefre
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [details, setDetails] = useState<EscrowDetails | null>(null);
-  const [actionTxHash, setActionTxHash] = useState<string | null>(null);
+
 
   const handleCheckStatus = async (id: string = escrowIdInput) => {
     if (!id.trim()) return;
@@ -83,7 +83,6 @@ export const EscrowManager: React.FC<EscrowManagerProps> = ({ publicKey, onRefre
       const signedTx = StellarSdk.TransactionBuilder.fromXDR(signedXdr, StellarSdk.Networks.TESTNET);
       const result = await rpc.sendTransaction(signedTx);
       const hash = result.hash;
-      setActionTxHash(hash);
 
       listenForContractEvents(hash, (status) => {
         if (status === 'success') {
@@ -119,7 +118,6 @@ export const EscrowManager: React.FC<EscrowManagerProps> = ({ publicKey, onRefre
       const signedTx = StellarSdk.TransactionBuilder.fromXDR(signedXdr, StellarSdk.Networks.TESTNET);
       const result = await rpc.sendTransaction(signedTx);
       const hash = result.hash;
-      setActionTxHash(hash);
 
       listenForContractEvents(hash, (status) => {
         if (status === 'success') {

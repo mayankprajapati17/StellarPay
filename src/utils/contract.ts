@@ -260,7 +260,7 @@ export async function getEscrowStatus(escrowId: string) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const obj = native as Record<string, any>;
-  const statusMap: Record<number, string> = {
+  const statusLabels: Record<number, string> = {
     0: 'Pending',
     1: 'Released',
     2: 'Refunded',
@@ -269,7 +269,8 @@ export async function getEscrowStatus(escrowId: string) {
 
   let statusVal = 'Pending';
   if (Array.isArray(obj['status']) && obj['status'].length > 0) {
-    statusVal = String(obj['status'][0]);
+    const raw = obj['status'][0];
+    statusVal = typeof raw === 'number' ? (statusLabels[raw] ?? 'Pending') : String(raw);
   } else if (typeof obj['status'] === 'string') {
     statusVal = obj['status'];
   }
