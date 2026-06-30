@@ -296,6 +296,13 @@ stellarpay/
 ### Payment link created (stored on-chain)  
 <img width="1920" height="1080" alt="Screenshot (10)" src="https://github.com/user-attachments/assets/b6833cd7-cb9b-4600-b9a1-e38b3c5ad474" />
 
+### Payment page
+<img width="1899" height="1635" alt="screencapture-localhost-5173-pay-xyz-2026-06-30-23_18_38" src="https://github.com/user-attachments/assets/8ea94012-505a-4113-ba88-913049bc9d9c" />
+### Payment Confirmation Page
+<img width="1899" height="1032" alt="screencapture-localhost-5173-pay-xyz-2026-06-30-23_19_33" src="https://github.com/user-attachments/assets/18fadc29-0ef5-40bb-b8bf-e1c32ae7d59e" />
+
+
+
 
 ## Live Demo
 
